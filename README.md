@@ -1,2 +1,2 @@
-# MC-ChatManager
+# ChatManager
 ChatManager manages your chat!
