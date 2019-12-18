@@ -1,0 +1,78 @@
+# -DeagoTheDoggo
+# Coded by Mitchell
+
+# TODO List:
+# Add more features to CustomChat.
+
+options:
+	prefix: &8[&eChat Manager&8]
+
+	NameLowercase: chatmanager
+	Name: ChatManager
+
+	Permission: ChatManager
+	AdminPermission: {@Permission}.Admin
+	PlayerPermission: {@Permission}.Player
+	GlobalPermission: {@Permission}.Global
+
+command /{@NameLowercase} [<text>] [<text>]:
+	permission: {@AdminPermission}
+	permission message: &cERROR: &7You do not have permission to use this command!
+	trigger:
+		if argument 1 is "customchat":
+			if argument 2 is "enable":
+				if {ChatManager::CustomChat::Enabled} is true:
+					send "{@prefix} &c{@Name} Custom Chat is already enabled!"
+				else:
+					set {ChatManager::CustomChat::Enabled} to true
+					send "{@prefix} &aEnabled the {@Name} Custom Chat!"
+			if argument 2 is "disable":
+				if {ChatManager::CustomChat::Enabled} is false:
+					send "{@prefix} &c{@Name} Custom Chat is already disabled!"
+				else:
+					set {ChatManager::CustomChat::Enabled} to false
+					send "{@prefix} &cDisabled the {@Name} Custom Chat!"
+
+		if argument 1 is "clearchat":
+			loop 300 times:
+				broadcast ""
+			broadcast "{@prefix} &eChat has been &acleared &eby &c%player%&e!"
+
+		if argument 1 is "mutechat":
+			if {ChatManager.MuteChat} is true:
+				set {ChatManager.MuteChat} to false
+				broadcast "{@prefix} &eChat has been &aunmuted &eby &c%player%&e!"
+			else:
+				set {ChatManager.MuteChat} to true
+				broadcast "{@prefix} &eChat has been &amuted &eby &c%player%&e!"
+
+		if argument 1 is "help":
+			if argument 1 is "customchat":
+				send "{@prefix} &eHelp:"
+				send "&6/{@NameLowercase} customchat enable &8- &7Enables the {@Name} Custom Chat."
+				send "&6/{@NameLowercase} customchat disable &8- &7Disables the {@Name} Custom Chat."
+
+		if argument 1 is "reload":
+			make console execute command "/sk reload ChatManager"
+			send "{@prefix} &aReloaded all {@Name} files."
+
+on chat:
+	if {ChatManager.MuteChat} is true:
+		cancel event
+		send "&e%player% "
+	else:
+		if {ChatManager::CustomChat::Enabled} is true:
+			cancel event
+			broadcast "%colored player's prefix%&e%player%&f: %colored message%"
+
+on script load:
+	file "plugins/ChatManager/data/config.yml" doesn't exist:
+		create file "plugins/ChatManager/data/config.yml"
+		set yml value "customchat" of file "plugins/ChatManager/data/config.yml" to "false"
+		set {ChatManager::CustomChat::Enabled} to yml value "customchat" of file "plugins/ChatManager/data/config.yml"
+
+on script unload:
+	file "plugins/ChatManager/data/config.yml" doesn't exist:
+		create file "plugins/ChatManager/data/config.yml"
+		set yml value "customchat" of file "plugins/ChatManager/data/config.yml" to "false"
+		set {ChatManager::CustomChat::Enabled} to yml value "customchat" of file "plugins/ChatManager/data/config.yml"
